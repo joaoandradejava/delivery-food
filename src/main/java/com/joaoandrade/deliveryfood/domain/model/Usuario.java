@@ -138,6 +138,22 @@ public class Usuario implements Serializable {
 		this.dataAtualizacao = dataAtualizacao;
 	}
 
+	public List<Endereco> getEnderecos() {
+		return enderecos;
+	}
+
+	public void setEnderecos(List<Endereco> enderecos) {
+		this.enderecos = enderecos;
+	}
+
+	public Set<Perfil> getPerfils() {
+		return perfils;
+	}
+
+	public void setPerfils(Set<Perfil> perfils) {
+		this.perfils = perfils;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

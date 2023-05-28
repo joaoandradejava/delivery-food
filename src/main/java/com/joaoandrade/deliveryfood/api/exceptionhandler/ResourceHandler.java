@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -40,6 +41,17 @@ public class ResourceHandler extends ResponseEntityExceptionHandler {
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 		ProblemDetail problemDetail = ProblemDetail.montarProblemDetail(error.getType(), error.getTitle(),
 				status.value(), mensagem, MENSAGEM_PADRAO_ERROR);
+
+		return this.handleExceptionInternal(ex, problemDetail, new HttpHeaders(), status, request);
+	}
+
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex, WebRequest request) {
+		Error error = Error.FALHA_NA_AUTENTICACAO;
+		HttpStatus status = HttpStatus.UNAUTHORIZED;
+		String mensagem = ex.getMessage();
+		ProblemDetail problemDetail = ProblemDetail.montarProblemDetail(error.getType(), error.getTitle(),
+				status.value(), mensagem);
 
 		return this.handleExceptionInternal(ex, problemDetail, new HttpHeaders(), status, request);
 	}

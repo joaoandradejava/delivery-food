@@ -12,7 +12,8 @@ public enum Error {
 	ERRO_INTERNO_NO_SERVIDOR("erro-interno-no-servidor", "Erro interno no servidor"),
 	DADOS_INVALIDOS("dados-invalidos", "Dados inválidos"),
 	ERRO_INTEGRIDADE_DOS_DADOS("erro-integridade-dos-dados", "Erro de integridade dos dados"),
-	ERRO_CONSTRAINT("violacao-das-constraint-banco", "Ocorreu um erro de violação de constraints do banco");
+	ERRO_CONSTRAINT("violacao-das-constraint-banco", "Ocorreu um erro de violação de constraints do banco"),
+	FALHA_NA_AUTENTICACAO("falha-na-autenticacao", "Falha na autenticação");
 
 	private final String type;
 	private final String title;

@@ -1,6 +1,7 @@
 package com.joaoandrade.deliveryfood.domain.service.crud;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,9 @@ public class CrudUsuarioService {
 	@Autowired
 	private UsuarioRepository repository;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	public Usuario buscarPorId(Long id) {
 		return this.repository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(
 				String.format("O usuario de id %d não foi encontrado no sistema!", id)));
@@ -21,6 +25,8 @@ public class CrudUsuarioService {
 
 	@Transactional
 	public Usuario cadastrar(Usuario usuario) {
+		usuario.setSenha(this.passwordEncoder.encode(usuario.getSenha()));
+
 		return this.repository.save(usuario);
 	}
 
