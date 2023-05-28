@@ -24,7 +24,7 @@ public class CrudCategoriaService {
 
 	public Categoria buscarPorId(Long id) {
 		return this.repository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(
-				String.format("A Categoria de id %d não foi encontrada no sisstema!", id)));
+				String.format("A Categoria de id %d não foi encontrada no sistema!", id)));
 	}
 
 	@Transactional
