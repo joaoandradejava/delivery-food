@@ -1,6 +1,8 @@
 package com.joaoandrade.deliveryfood.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +15,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joaoandrade.deliveryfood.api.assembler.ProdutoFullModelAssembler;
+import com.joaoandrade.deliveryfood.api.assembler.ProdutoModelAssembler;
 import com.joaoandrade.deliveryfood.api.disassembler.ProdutoInputDisassembler;
 import com.joaoandrade.deliveryfood.api.input.ProdutoInput;
 import com.joaoandrade.deliveryfood.api.model.ProdutoFullModel;
+import com.joaoandrade.deliveryfood.api.model.ProdutoModel;
+import com.joaoandrade.deliveryfood.domain.filter.ProdutoFilter;
 import com.joaoandrade.deliveryfood.domain.model.Produto;
 import com.joaoandrade.deliveryfood.domain.service.crud.CrudProdutoService;
 
@@ -33,6 +38,16 @@ public class ProdutoController {
 
 	@Autowired
 	private ProdutoInputDisassembler produtoInputDisassembler;
+
+	@Autowired
+	private ProdutoModelAssembler produtoModelAssembler;
+
+	@GetMapping
+	public Page<ProdutoModel> buscarTodos(Pageable pageable, ProdutoFilter produtoFilter) {
+		Page<Produto> page = this.crudProdutoService.buscarTodos(produtoFilter, pageable);
+
+		return page.map(p -> this.produtoModelAssembler.toModel(p));
+	}
 
 	@GetMapping("/{id}")
 	public ProdutoFullModel buscarPorId(@PathVariable String id) {
