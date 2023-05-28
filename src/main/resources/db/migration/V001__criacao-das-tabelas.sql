@@ -58,6 +58,7 @@
         data_atualizacao timestamp(6),
         data_cadastro timestamp(6),
         foto_url TEXT,
+        descricao varchar(255),
         is_disponivel boolean,
         nome varchar(255) not null,
         preco numeric(38,2) not null,

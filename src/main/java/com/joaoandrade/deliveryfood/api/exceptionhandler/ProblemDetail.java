@@ -1,6 +1,8 @@
 package com.joaoandrade.deliveryfood.api.exceptionhandler;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -13,6 +15,7 @@ public class ProblemDetail {
 	private final int status;
 	private final String detail;
 	private final String userMessage;
+	private final List<FieldMessage> errors = new ArrayList<>();
 
 	public ProblemDetail(String type, String title, int status, String detail, String userMessage) {
 		super();
@@ -45,6 +48,14 @@ public class ProblemDetail {
 
 	public String getUserMessage() {
 		return userMessage;
+	}
+
+	public List<FieldMessage> getErrors() {
+		return errors;
+	}
+
+	public void adicionarError(String field, String userMessage) {
+		this.errors.add(new FieldMessage(field, userMessage));
 	}
 
 	public static ProblemDetail montarProblemDetail(String type, String title, int status, String detail) {

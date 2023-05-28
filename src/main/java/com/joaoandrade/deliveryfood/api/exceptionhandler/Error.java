@@ -9,7 +9,10 @@ public enum Error {
 	PROPRIEDADE_INEXISTENTE("propriedade-inexistente", "Propriedade inexistente"),
 	ENDPOINT_NAO_ENCONTRADO("endpoint-nao-encontrado", "Endpoint não encontrado"),
 	METODO_REQUISICAO_NAO_SUPORTADO("metodo-requisicao-nao-suportado", "Metodo de requisição não suportado"),
-	ERRO_INTERNO_NO_SERVIDOR("erro-interno-no-servidor", "Erro interno no servidor");
+	ERRO_INTERNO_NO_SERVIDOR("erro-interno-no-servidor", "Erro interno no servidor"),
+	DADOS_INVALIDOS("dados-invalidos", "Dados inválidos"),
+	ERRO_INTEGRIDADE_DOS_DADOS("erro-integridade-dos-dados", "Erro de integridade dos dados"),
+	ERRO_CONSTRAINT("violacao-das-constraint-banco", "Ocorreu um erro de violação de constraints do banco");
 
 	private final String type;
 	private final String title;

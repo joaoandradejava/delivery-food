@@ -39,6 +39,8 @@ public class Produto implements Serializable {
 	@Column(columnDefinition = "TEXT")
 	private String fotoUrl;
 
+	private String descricao;
+
 	@CreationTimestamp
 	private LocalDateTime dataCadastro;
 
@@ -92,6 +94,14 @@ public class Produto implements Serializable {
 		this.fotoUrl = fotoUrl;
 	}
 
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
 	public LocalDateTime getDataCadastro() {
 		return dataCadastro;
 	}
@@ -119,6 +129,14 @@ public class Produto implements Serializable {
 	@PrePersist
 	private void gerarUuid() {
 		this.id = UUID.randomUUID().toString();
+	}
+
+	public void associarCategoria(Categoria categoria) {
+		this.categorias.add(categoria);
+	}
+
+	public void dissociarCategoria(Categoria categoria) {
+		this.categorias.remove(categoria);
 	}
 
 	@Override
