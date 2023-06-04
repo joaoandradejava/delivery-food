@@ -17,39 +17,54 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.joaoandrade.deliveryfood.core.jwt.JwtAuthorizationFilter;
 import com.joaoandrade.deliveryfood.core.jwt.JwtUtil;
 import com.joaoandrade.deliveryfood.domain.repository.UsuarioRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-	private static final String[] PUBLIC_GET = { "/produtos/**" };
-	private static final String[] PUBLIC_POST = { "/auth", "/usuarios" };
+    private static final String[] PUBLIC_GET = {"/produtos/**"};
+    private static final String[] PUBLIC_POST = {"/login", "/usuarios"};
 
-	@Autowired
-	private JwtUtil jwtUtil;
+    @Autowired
+    private JwtUtil jwtUtil;
 
-	@Autowired
-	private UsuarioRepository usuarioRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-		return http.csrf(csrf -> csrf.disable())
-				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(a -> a.requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
-						.requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll().anyRequest().authenticated())
-				.addFilterBefore(new JwtAuthorizationFilter(this.jwtUtil, this.usuarioRepository),
-						UsernamePasswordAuthenticationFilter.class)
-				.build();
-	}
+        return http.cors(cors -> cors.configure(http)).csrf(csrf -> csrf.disable())
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(a -> a.requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
+                        .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll().anyRequest().authenticated())
+                .addFilterBefore(new JwtAuthorizationFilter(this.jwtUtil, this.usuarioRepository),
+                        UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
 
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-			throws Exception {
-		return authenticationConfiguration.getAuthenticationManager();
-	}
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
+        configuration.addAllowedMethod("PUT");
+        configuration.addAllowedMethod("DELETE");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 }
