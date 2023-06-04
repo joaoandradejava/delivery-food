@@ -22,7 +22,7 @@ import com.joaoandrade.deliveryfood.domain.repository.UsuarioRepository;
 @EnableWebSecurity
 public class WebSecurityConfig {
 	private static final String[] PUBLIC_GET = { "/produtos/**" };
-	private static final String[] PUBLIC_POST = { "/login", "/usuarios" };
+	private static final String[] PUBLIC_POST = { "/auth", "/usuarios" };
 
 	@Autowired
 	private JwtUtil jwtUtil;
