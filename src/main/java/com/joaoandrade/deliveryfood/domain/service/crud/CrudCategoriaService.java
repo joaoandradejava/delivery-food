@@ -1,9 +1,9 @@
 package com.joaoandrade.deliveryfood.domain.service.crud;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +18,8 @@ public class CrudCategoriaService {
 	@Autowired
 	private CategoriaRepository repository;
 
-	public List<Categoria> buscarTodos() {
-		return this.repository.findAll();
+	public Page<Categoria> buscarTodos(Pageable pageable) {
+		return this.repository.findAll(pageable);
 	}
 
 	public Categoria buscarPorId(Long id) {

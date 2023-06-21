@@ -3,6 +3,8 @@ package com.joaoandrade.deliveryfood.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,51 +29,51 @@ import jakarta.validation.Valid;
 @RequestMapping("/categorias")
 public class CategoriaController {
 
-	@Autowired
-	private CrudCategoriaService crudCategoriaService;
+    @Autowired
+    private CrudCategoriaService crudCategoriaService;
 
-	@Autowired
-	private CategoriaModelAssembler categoriaModelAssembler;
+    @Autowired
+    private CategoriaModelAssembler categoriaModelAssembler;
 
-	@Autowired
-	private CategoriaInputDisassembler categoriaInputDisassembler;
+    @Autowired
+    private CategoriaInputDisassembler categoriaInputDisassembler;
 
-	@GetMapping
-	public List<CategoriaModel> buscarTodos() {
-		List<Categoria> lista = this.crudCategoriaService.buscarTodos();
+    @GetMapping
+    public Page<CategoriaModel> buscarTodos(Pageable pageable) {
+        Page<Categoria> page = this.crudCategoriaService.buscarTodos(pageable);
 
-		return this.categoriaModelAssembler.toCollectionModel(lista);
-	}
+        return page.map(x -> this.categoriaModelAssembler.toModel(x));
+    }
 
-	@GetMapping("/{id}")
-	public CategoriaModel buscarPorId(@PathVariable Long id) {
-		Categoria categoria = this.crudCategoriaService.buscarPorId(id);
+    @GetMapping("/{id}")
+    public CategoriaModel buscarPorId(@PathVariable Long id) {
+        Categoria categoria = this.crudCategoriaService.buscarPorId(id);
 
-		return this.categoriaModelAssembler.toModel(categoria);
-	}
+        return this.categoriaModelAssembler.toModel(categoria);
+    }
 
-	@PostMapping
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public CategoriaModel cadastrar(@Valid @RequestBody CategoriaInput categoriaInput) {
-		Categoria categoria = this.crudCategoriaService
-				.cadastrar(this.categoriaInputDisassembler.toDomainModel(categoriaInput));
+    @PostMapping
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public CategoriaModel cadastrar(@Valid @RequestBody CategoriaInput categoriaInput) {
+        Categoria categoria = this.crudCategoriaService
+                .cadastrar(this.categoriaInputDisassembler.toDomainModel(categoriaInput));
 
-		return this.categoriaModelAssembler.toModel(categoria);
-	}
+        return this.categoriaModelAssembler.toModel(categoria);
+    }
 
-	@PutMapping("/{id}")
-	public CategoriaModel atualizar(@PathVariable Long id, @Valid @RequestBody CategoriaInput categoriaInput) {
-		Categoria categoria = this.crudCategoriaService.buscarPorId(id);
-		this.categoriaInputDisassembler.copyToDomainModel(categoriaInput, categoria);
-		categoria = this.crudCategoriaService.atualizar(categoria);
+    @PutMapping("/{id}")
+    public CategoriaModel atualizar(@PathVariable Long id, @Valid @RequestBody CategoriaInput categoriaInput) {
+        Categoria categoria = this.crudCategoriaService.buscarPorId(id);
+        this.categoriaInputDisassembler.copyToDomainModel(categoriaInput, categoria);
+        categoria = this.crudCategoriaService.atualizar(categoria);
 
-		return this.categoriaModelAssembler.toModel(categoria);
-	}
+        return this.categoriaModelAssembler.toModel(categoria);
+    }
 
-	@DeleteMapping("/{id}")
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void deletarPorId(@PathVariable Long id) {
-		this.crudCategoriaService.deletarPorId(id);
-	}
+    @DeleteMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deletarPorId(@PathVariable Long id) {
+        this.crudCategoriaService.deletarPorId(id);
+    }
 
 }
