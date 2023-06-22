@@ -67,6 +67,8 @@ public class ProdutoController {
 	@PutMapping("/{id}")
 	public ProdutoFullModel atualizar(@PathVariable String id, @Valid @RequestBody ProdutoInput produtoInput) {
 		Produto produto = this.crudProdutoService.buscarPorId(id);
+		this.produtoInputDisassembler.copyToDomainModel(produtoInput, produto);
+		produto = this.crudProdutoService.atualizar(produto);
 
 		return this.produtoFullModelAssembler.toModel(produto);
 	}
