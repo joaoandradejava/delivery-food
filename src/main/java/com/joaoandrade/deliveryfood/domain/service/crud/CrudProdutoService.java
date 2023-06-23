@@ -1,6 +1,12 @@
 package com.joaoandrade.deliveryfood.domain.service.crud;
 
+import com.joaoandrade.deliveryfood.domain.exception.EntidadeEmUsoException;
+import com.joaoandrade.deliveryfood.domain.exception.EntidadeNaoEncontradaException;
+import com.joaoandrade.deliveryfood.domain.filter.ProdutoFilter;
 import com.joaoandrade.deliveryfood.domain.model.Categoria;
+import com.joaoandrade.deliveryfood.domain.model.Produto;
+import com.joaoandrade.deliveryfood.domain.repository.ProdutoRepository;
+import com.joaoandrade.deliveryfood.infrastructure.repository.ProdutoSpecificator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -8,15 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.joaoandrade.deliveryfood.domain.exception.EntidadeEmUsoException;
-import com.joaoandrade.deliveryfood.domain.exception.EntidadeNaoEncontradaException;
-import com.joaoandrade.deliveryfood.domain.filter.ProdutoFilter;
-import com.joaoandrade.deliveryfood.domain.model.Produto;
-import com.joaoandrade.deliveryfood.domain.repository.ProdutoRepository;
-import com.joaoandrade.deliveryfood.infrastructure.repository.ProdutoSpecificator;
-
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -39,12 +37,12 @@ public class CrudProdutoService {
 
     @Transactional
     public Produto cadastrar(Produto produto) {
-        this.buscarCategoriasPorIdDoProduto(produto);
+        this.buscarCategoriasDoProduto(produto);
 
         return this.repository.save(produto);
     }
 
-    private void buscarCategoriasPorIdDoProduto(Produto produto) {
+    private void buscarCategoriasDoProduto(Produto produto) {
         Set<Categoria> categorias = new HashSet<>();
         produto.getCategorias().forEach(c -> {
             Categoria categoria = this.crudCategoriaService.buscarPorId(c.getId());
@@ -56,6 +54,8 @@ public class CrudProdutoService {
 
     @Transactional
     public Produto atualizar(Produto produto) {
+        this.buscarCategoriasDoProduto(produto);
+
         return this.repository.save(produto);
     }
 

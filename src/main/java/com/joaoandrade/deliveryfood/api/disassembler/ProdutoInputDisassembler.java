@@ -1,12 +1,10 @@
 package com.joaoandrade.deliveryfood.api.disassembler;
 
-import com.joaoandrade.deliveryfood.domain.model.Categoria;
+import com.joaoandrade.deliveryfood.api.input.ProdutoInput;
+import com.joaoandrade.deliveryfood.domain.model.Produto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import com.joaoandrade.deliveryfood.api.input.ProdutoInput;
-import com.joaoandrade.deliveryfood.domain.model.Produto;
 
 import java.util.HashSet;
 
@@ -17,21 +15,14 @@ public class ProdutoInputDisassembler {
     private ModelMapper modelMapper;
 
     public Produto toDomainModel(ProdutoInput produtoInput) {
-        Produto produto = this.modelMapper.map(produtoInput, Produto.class);
-        this.copyCategoriasIdToDomainModel(produtoInput, produto);
+        return this.modelMapper.map(produtoInput, Produto.class);
 
-        return produto;
     }
-
-
+    
     public void copyToDomainModel(ProdutoInput produtoInput, Produto produto) {
-        this.modelMapper.map(produtoInput, produto);
-
         produto.setCategorias(new HashSet<>());
-        this.copyCategoriasIdToDomainModel(produtoInput, produto);
+        this.modelMapper.map(produtoInput, produto);
     }
 
-    private void copyCategoriasIdToDomainModel(ProdutoInput produtoInput, Produto produto) {
-        produtoInput.getCategoriasId().forEach(categoriaId -> produto.getCategorias().add(new Categoria(categoriaId)));
-    }
+
 }

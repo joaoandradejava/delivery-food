@@ -1,13 +1,14 @@
 package com.joaoandrade.deliveryfood.api.input;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
-
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProdutoInput {
 
@@ -20,8 +21,9 @@ public class ProdutoInput {
     private BigDecimal preco;
     private String fotoUrl;
 
+    @Valid
     @NotEmpty
-    private Set<Long> categoriasId = new HashSet<>();
+    private Set<CategoriaIdInput> categorias = new HashSet<>();
 
     public ProdutoInput() {
     }
@@ -58,11 +60,11 @@ public class ProdutoInput {
         this.fotoUrl = fotoUrl;
     }
 
-    public Set<Long> getCategoriasId() {
-        return categoriasId;
+    public Set<CategoriaIdInput> getCategorias() {
+        return categorias;
     }
 
-    public void setCategoriasId(Set<Long> categoriasId) {
-        this.categoriasId = categoriasId;
+    public void setCategorias(Set<CategoriaIdInput> categorias) {
+        this.categorias = categorias;
     }
 }

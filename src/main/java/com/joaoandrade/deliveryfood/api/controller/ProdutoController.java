@@ -1,5 +1,7 @@
 package com.joaoandrade.deliveryfood.api.controller;
 
+import com.joaoandrade.deliveryfood.domain.exception.CategoriaNaoEncontradaException;
+import com.joaoandrade.deliveryfood.domain.exception.NegocioException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,52 +32,62 @@ import jakarta.validation.Valid;
 @RequestMapping("/produtos")
 public class ProdutoController {
 
-	@Autowired
-	private CrudProdutoService crudProdutoService;
+    @Autowired
+    private CrudProdutoService crudProdutoService;
 
-	@Autowired
-	private ProdutoFullModelAssembler produtoFullModelAssembler;
+    @Autowired
+    private ProdutoFullModelAssembler produtoFullModelAssembler;
 
-	@Autowired
-	private ProdutoInputDisassembler produtoInputDisassembler;
+    @Autowired
+    private ProdutoInputDisassembler produtoInputDisassembler;
 
-	@Autowired
-	private ProdutoModelAssembler produtoModelAssembler;
+    @Autowired
+    private ProdutoModelAssembler produtoModelAssembler;
 
-	@GetMapping
-	public Page<ProdutoModel> buscarTodos(Pageable pageable, ProdutoFilter produtoFilter) {
-		Page<Produto> page = this.crudProdutoService.buscarTodos(produtoFilter, pageable);
+    @GetMapping
+    public Page<ProdutoModel> buscarTodos(Pageable pageable, ProdutoFilter produtoFilter) {
+        Page<Produto> page = this.crudProdutoService.buscarTodos(produtoFilter, pageable);
 
-		return page.map(p -> this.produtoModelAssembler.toModel(p));
-	}
+        return page.map(p -> this.produtoModelAssembler.toModel(p));
+    }
 
-	@GetMapping("/{id}")
-	public ProdutoFullModel buscarPorId(@PathVariable String id) {
-		Produto produto = this.crudProdutoService.buscarPorId(id);
+    @GetMapping("/{id}")
+    public ProdutoFullModel buscarPorId(@PathVariable String id) {
+        Produto produto = this.crudProdutoService.buscarPorId(id);
 
-		return this.produtoFullModelAssembler.toModel(produto);
-	}
+        return this.produtoFullModelAssembler.toModel(produto);
+    }
 
-	@PostMapping
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public ProdutoFullModel cadastrar(@Valid @RequestBody ProdutoInput produtoInputD) {
-		Produto produto = this.crudProdutoService.cadastrar(this.produtoInputDisassembler.toDomainModel(produtoInputD));
+    @PostMapping
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public ProdutoFullModel cadastrar(@Valid @RequestBody ProdutoInput produtoInputD) {
+        try {
+            Produto produto = this.crudProdutoService.cadastrar(this.produtoInputDisassembler.toDomainModel(produtoInputD));
 
-		return this.produtoFullModelAssembler.toModel(produto);
-	}
+            return this.produtoFullModelAssembler.toModel(produto);
+        } catch (CategoriaNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
 
-	@PutMapping("/{id}")
-	public ProdutoFullModel atualizar(@PathVariable String id, @Valid @RequestBody ProdutoInput produtoInput) {
-		Produto produto = this.crudProdutoService.buscarPorId(id);
-		this.produtoInputDisassembler.copyToDomainModel(produtoInput, produto);
-		produto = this.crudProdutoService.atualizar(produto);
+    }
 
-		return this.produtoFullModelAssembler.toModel(produto);
-	}
+    @PutMapping("/{id}")
+    public ProdutoFullModel atualizar(@PathVariable String id, @Valid @RequestBody ProdutoInput produtoInput) {
+        try {
+            Produto produto = this.crudProdutoService.buscarPorId(id);
+            this.produtoInputDisassembler.copyToDomainModel(produtoInput, produto);
+            produto = this.crudProdutoService.atualizar(produto);
 
-	@DeleteMapping("/{id}")
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void deletarPorId(@PathVariable String id) {
-		this.crudProdutoService.deletarPorId(id);
-	}
+            return this.produtoFullModelAssembler.toModel(produto);
+        } catch (CategoriaNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
+
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deletarPorId(@PathVariable String id) {
+        this.crudProdutoService.deletarPorId(id);
+    }
 }
